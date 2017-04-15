@@ -1,0 +1,50 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package data.creation;
+
+import java.awt.image.DataBuffer;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
+
+import javax.media.jai.JAI;
+import javax.media.jai.RasterFactory;
+import javax.media.jai.TiledImage;
+
+/**
+ * This application creates a volume image, represented and stored as a two-dimensional image with
+ * a large number of bands (the third dimension). The image's pixels will be floating point values.
+ * To avoid Out of Memory errors, you should run this application with an increased heap space
+ * (e.g. -Xmx256M).
+ */
+public class CreateGLVolume
+  {
+ /**
+  * The application entry point. No parameters are required.
+  */
+  public static void main(String[] args)
+    {
+    // The image dimensions.
+    int width = 252; int height = 252; int depth = 252;
+    // Create a simple model with number of bands equal to the depth of the volume image.
+    SampleModel sampleModel = 
+      RasterFactory.createBandedSampleModel(DataBuffer.TYPE_FLOAT,width,height,depth); 
+    // Create a TiledImage using the SampleModel.
+    TiledImage tiledImage = new TiledImage(0,0,width,height,0,0,sampleModel,null);
+    // Get a raster for the single tile.
+    WritableRaster wr = tiledImage.getWritableTile(0,0); 
+    for(int w=0;w<width;w++)
+      for(int h=0;h<height;h++)
+        for(int d=0;d<depth;d++)
+          {
+          float value = (float)(Math.sin(w/20.)*Math.sin(h/20.)*Math.sin(d/20.));
+          wr.setSample(w,h,d,value);
+          }
+    // Store as a tiff (can handle large number of bands)
+    JAI.create("filestore",tiledImage,"jaivol.tif","TIFF");
+    }
+
+  }

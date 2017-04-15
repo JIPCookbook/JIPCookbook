@@ -1,0 +1,33 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package display.annotations;
+
+import java.awt.Graphics2D;
+
+/**
+ * This class represents a rectangular annotation. Its shape is represented by the corner coordinates.
+ */
+public class RectangleAnnotation extends DrawableAnnotation
+  {
+  private int x1,y1,x2,y2; // the corners of the rectangle.
+
+  // Constructor for this class.
+  public RectangleAnnotation(int x1,int y1,int x2,int y2)
+    {
+    this.x1 = x1;    this.y1 = y1;
+    this.x2 = x2;    this.y2 = y2;
+    }
+  
+  // Concrete implementation of the paint method.
+  public void paint(Graphics2D g2d)
+    {
+    g2d.setColor(getColor());
+    g2d.setStroke(getStroke());
+    g2d.drawRect(x1,y1,x2-x1,y2-y1);
+    }
+  
+  }

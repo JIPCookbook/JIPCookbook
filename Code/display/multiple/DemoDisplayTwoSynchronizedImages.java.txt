@@ -1,0 +1,57 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package display.multiple;
+
+import javax.media.jai.JAI;
+import javax.media.jai.KernelJAI;
+import javax.media.jai.PlanarImage;
+import javax.swing.JFrame;
+
+/*
+ * This class demonstrates the DisplayTwoSynchronizedImages component. It loads an
+ * image, applies a convolve operator and displays the original and convolved image
+ * side by side.\section{}
+
+ */
+public class DemoDisplayTwoSynchronizedImages
+  {
+ /**
+  * The application entry point.
+  * @param args the image file name.
+  */
+  public static void main(String[] args)
+    {
+    // We need one argument - the image file name.
+    if (args.length != 1)
+      {
+      System.err.println("Usage: java display.multiple.DemoDisplayTwoSynchronizedImages image");
+      System.exit(0);
+      }
+    // Create a kernel for horizontal edge detection.
+    float[] kernelMatrix = { -1, -2, -1,
+                              0,  0,  0,
+                              1,  2,  1 };
+    // Read the image. 
+    PlanarImage input = JAI.create("fileload", args[0]);
+    // Create the kernel using the array.
+    KernelJAI kernel = new KernelJAI(3,3,kernelMatrix);
+    // Run the convolve operator, creating the processed image.
+    PlanarImage output = JAI.create("convolve", input, kernel);
+    // Create a JFrame for displaying the results.
+    JFrame frame = new JFrame();
+    frame.setTitle("Sobel horizontal border of the image "+args[0]);
+    // Add to the JFrame's ContentPane an instance of
+    // DisplayTwoSynchronizedImages, which will contain the original and
+    // processed image.
+    frame.getContentPane().add(
+        new DisplayTwoSynchronizedImages(input,output));
+    // Set the closing operation so the application is finished.
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.pack(); // adjust the frame size using preferred dimensions.
+    frame.setVisible(true); // show the frame.
+    }
+  }

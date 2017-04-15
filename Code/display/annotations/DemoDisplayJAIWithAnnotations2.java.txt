@@ -1,0 +1,73 @@
+package display.annotations;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.image.Raster;
+import java.util.Arrays;
+
+import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
+/**
+ * This class shows how to display an image with annotations over it. We will open an image and draw
+ * a big red circle over its center.
+ */
+public class DemoDisplayJAIWithAnnotations2
+  {
+  public static void main(String[] args)
+    {
+    PlanarImage image = JAI.create("fileload",args[0]);
+    DisplayJAIWithAnnotations display = new DisplayJAIWithAnnotations(image);
+    // Let's scan the image, trying to locate "bright" rectangular regions of a specific size.
+    int width = image.getWidth();
+    int height = image.getHeight();
+    int size = 40; 
+    int averageLevel = 230;
+    // We don't want to scan nearby regions when we find the regions we're looking for. A "veto"
+    // matrix can help on this. Initially we can scan all the image.
+    boolean[][] canScan = new boolean[width][height];
+    for(boolean[] line:canScan) Arrays.fill(line,true);
+    // We assume that we can get the pixels values in a integer array. We also assume that this 
+    // image is in color (RGB).
+    Raster inputRaster = image.getData();
+    int[] pixels = new int[3*width*height];
+    inputRaster.getPixels(0,0,width,height,pixels);
+    // Scan the image pixels in each row and column.
+    for(int h=size/2;h<height-size/2;h++)
+      for(int w=size/2;w<width-size/2;w++)
+        {
+        if (canScan[w][h])
+          {
+          // Calculate the average levels around this pixel.
+          double acum = 0;
+          for(int x=-size/2;x<size/2;x++)
+            for(int y=-size/2;y<size/2;y++)
+              {
+              int offset = (h+y)*width*3+(w+x)*3;
+              acum += pixels[offset]+pixels[offset+1]+pixels[offset+2];
+              }
+          if (acum > size*size*3*averageLevel) 
+            {
+            RectangleAnnotation a = new RectangleAnnotation(w-size/2,h-size/2,w+size/2,h+size/2);
+            a.setColor(Color.BLACK);
+            a.setStroke(new BasicStroke(5f));
+            display.addAnnotation(a);
+            // Since we found a bright region let's "paint" the neighborhood in the veto matrix.
+            for(int x=-size/2;x<size/2;x++)
+              for(int y=-size/2;y<size/2;y++)
+                canScan[w+x][h+y] = false;
+            }
+          }
+        }
+    // Create a new Frame and set the DisplayJAIWithAnnotations.
+    JFrame frame = new JFrame();
+    frame.setTitle("Annotations over an image");
+    frame.getContentPane().add(new JScrollPane(display));
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+    frame.pack(); 
+    frame.setVisible(true); 
+    }
+  
+  }

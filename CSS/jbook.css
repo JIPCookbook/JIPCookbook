@@ -1,0 +1,462 @@
+
+
+
+
+
+/*
+     FILE ARCHIVED ON 11:46:42 Jul 9, 2012 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 1:26:52 Apr 13, 2017.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+@charset "UTF-8";
+
+body 
+  { 
+  margin: 5px 0px 0px 0px; /* to avoid margins */
+  text-align: center; /* to correct the centering IE bug*/
+  background-image: url('../Images/seamless3.png');
+  background-repeat: repeat;
+  font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 11pt;
+  } 
+/* Styles for links */
+a:link, a:active { color: #0000c0; text-decoration: none; background-color: inherit; }
+a:visited { color: #0000c0; text-decoration: none; background-color: inherit;  }
+a:hover { color: #0080FF; text-decoration:underline; background-color: inherit;  }  
+
+ul
+  {
+  padding-top: 0px;
+  margin-top: 0px;
+  list-style-image: url("../Images/bluedot.png");
+  list-style-position: outside;
+  }
+ol
+	{
+  padding-top: 0px;
+  margin-top: 0px;
+	}
+
+
+/******************** SECTIONS N STUFF *********************/
+
+  
+
+p.chapter
+  {
+  font-size: 1.25em;
+  font-weight: 900;
+  line-height: 1.1em;
+  color: #006ba5;
+  border-bottom: 1px solid #002080;
+  margin: 0px 0px 5px 0px;
+	padding: 7px 4px 2px 4px;
+  }	 
+div.minitoc
+	{
+	border: 1px solid #80a0ff;
+	margin: 10px 35px 20px 35px;
+	background-color: #f9f9fb;
+	}  
+p.minitoc
+	{
+  font-size: 0.9em;
+  font-weight: 600;
+  line-height: 1em;
+  color: #004080;
+  margin: 2px 0px 1px 0px;
+	padding: 2px 2px 2px 2px;
+		}  
+p.section
+	{
+  font-size: 1.07em;
+  font-weight: 500;
+  line-height: 1em;
+  color: #006ba5;
+  border-bottom: 1px solid #0040E0;
+  margin: 0px 0px 5px 0px;
+	padding: 5px 4px 2px 4px;
+  }
+p.subsection
+	{
+  font-size: 1.0em;
+  font-weight: 500;
+  line-height: 1em;
+  color: #006ba5;
+  border-bottom: 1px dotted #0040E0;
+  margin: 0px 0px 5px 0px;
+	padding: 5px 4px 2px 4px;
+  }
+  
+/************* NAV ****************/  
+div.navigation
+	{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border-top: 1px solid #8080ff;
+	}
+table.navigation
+	{
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 98%;
+  margin-left:1%; margin-right:1%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+td.navigation0
+	{
+	border: 1px solid #a0a0ff;
+	text-align: center;
+	font-size: 1em;
+	width: 20%;
+	vertical-align: top;
+	}
+td.navigation1
+	{
+	border: 1px solid #a0a0ff;
+	text-align: center;
+	font-size: 0.9em;
+	width: 20%;
+	vertical-align: top;
+}
+td.navigation2
+	{
+	border: 1px solid #a0a0ff;
+	text-align: center;
+	font-size: 0.8em;
+	width: 20%;
+	vertical-align: top;
+}
+img.navigation	
+	{
+	border: 0;
+  }
+	
+
+/************* OTHER P STUFF ****************/  
+p
+  {
+  margin: 0;
+  padding: 0px 5px 10px 5px;
+  }
+p.note
+  {
+  background-color: #ffffe0;
+  margin-left: 3%;
+	margin-right: 3%;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 5px;
+  border: 1px dashed #ff0000;
+  color: #902000;
+  }
+p.locked
+  {
+  background-color: #fff0f0;
+  margin-left: 35px;
+	margin-right: 35px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding: 5px;
+  border: 1px solid #ff0000;
+  color: #A04040;
+  }  
+span.iref
+	{
+	color: #506080;
+	} 
+span.charindex
+	{
+	font-size: 0.75em;
+	vertical-align: middle;
+	}	 
+span.sub
+	{
+	vertical-align: baseline;
+	font-size: 0.8em;
+	position: relative;
+	top: 0.4em;
+	}  
+.bold
+	{
+	font-weight: bold;
+	}  
+.alert
+	{
+	font-weight: bold;
+	color: #600000;
+	}	
+/********************** STUFF FOR FIGURES, ETC ************************/
+p.caption
+	{
+	text-align: center;
+	font-size: 0.9em;
+	padding: 2px 0px 0px 0px;
+}
+img.equation
+	{
+	border: 0;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+  }
+img.figure
+	{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+		}
+p.subcaption
+	{
+	text-align: center;
+	font-size: 0.8em;
+	padding: 0px 0px 0px 0px;
+}
+div.spacer
+	{
+	margin-bottom: 3px;
+	}
+
+/************ TOCS ************/
+.toc0
+	{
+	display: block;
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-top: 5px;
+	margin-left: 1px;
+	margin-right: 1px;
+	background-color: #d0daff;
+}	
+.toc1
+	{
+	display: block;
+	font-size: 1.25em;
+	font-weight: bold;
+	margin-top: 5px;
+	margin-left: 2px;
+	margin-right: 2px;
+	background-color: #e0eaff;
+}	
+.toc2
+	{
+	display: block;
+	font-size: 1.1em;
+	font-weight: bold;
+	margin-top: 2px;
+	margin-right: 2px;
+	margin-left: 4px;
+	}	
+.toc3
+	{
+	display: block;
+	font-size: 1em;
+	font-weight: normal;
+	margin-top: 1px;
+		margin-right: 2px;
+	margin-left: 20px;
+}	
+.toc4
+	{
+	display: block;
+	font-size: 0.9em;
+	font-weight: normal;
+	margin-top: 0px;
+		margin-right: 2px;
+	margin-left: 35px;
+}	
+.mainref /* link in table of classes to the source code for that class*/
+	{
+	display: inline;
+	font-weight: 900;
+	color: #008f8f;
+  border: 1px solid #ffff00;
+  background-color: #ffffc0;
+	}	
+  
+
+ /************ SIMPLETABLE ************/
+ table.simpletable
+ {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 98%;
+  margin-left:1%; margin-right:1%;
+  margin-bottom: 10px;
+  vertical-align: top;
+ }
+table.centertable
+	{
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-left: 10px; margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+} 
+.simpleborder 
+ {
+ border: 1px solid #808080;
+	 }
+td.simpletable
+  {
+  padding: 5px 5px;
+  text-align: center;
+  vertical-align: top;
+ border: 1px solid #808080;
+}
+td.number
+	{
+	text-align: right;
+	vertical-align: top;
+	border: 1px solid #c0c0c0;
+	font-family: monospace;
+	}
+td.twocolumns
+	{
+	width: 50%;
+	}
+td.threecolumns
+	{
+	width: 33%;
+	}
+td.fourcolumns
+	{
+	width: 25%;
+	}
+td.fivecolumns
+	{
+	width: 20%;
+	}
+td.bottom
+	{
+	vertical-align: bottom;
+	}
+td.top
+	{
+	vertical-align: top;
+	padding-top: 10px;
+	}
+td.left
+        {
+        text-align: left;
+  }
+td.right
+  {
+  text-align: right;
+  }
+
+pre
+	{
+	font-size: 0.9em;
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-left: 10px;
+	margin-right: 10px;
+	background-color: #f8faff;
+	border: 1px solid #004080;
+	}
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+div.page
+  { 
+  width:920px; 
+  border: 1px solid blue;  
+  margin-left: auto;  
+  margin-right: auto; 
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: left; 
+  background-color: white; /* #fbfbfb;*/
+  } 
+p.title
+  {
+  font-size: 18pt;
+  font-weight: bold;
+  line-height: 14pt;
+  font-style: italic;
+  margin: 4px 5px 2px 5px;
+  color: #0000B0;
+  background-color: transparent;
+  }
+p.author
+  {
+  font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;
+  font-size: 13pt;
+  line-height: 10pt;
+  margin: 1px 5px 1px 5px;
+  color: #4040C0;
+  background-color: transparent;
+  }    
+div.title
+  {
+  width:920px; 
+  border: 2px solid blue;  
+  margin-left: auto;  
+  margin-right: auto; 
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 0px;
+  background-image: url('../Images/LogoBook.png');
+  background-repeat: no-repeat;
+  background-color: white;
+  } 
+
+div.body
+  {
+  width:920px; 
+  border: 1px solid #f0f0ff;  
+  margin-left: auto;  
+  margin-right: auto; 
+  margin-top: 3px;
+  margin-bottom: 3px;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-color: white; /* #fafaff;*/
+  text-align: left;
+  } 
+div.menu
+  {
+  width:920px; 
+  border: 1px solid #8080FF;  
+  margin-left: auto;  
+  margin-right: auto; 
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 0px;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-color: #f0f0f0;
+  } 
+p.hahahahahahahahaahahaa
+	{
+	margin: 1px 0px 2px 0px;
+	}
+ 
+
+	
+	
+

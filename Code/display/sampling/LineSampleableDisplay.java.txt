@@ -1,0 +1,236 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package display.sampling;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.util.Arrays;
+
+import com.sun.media.jai.widget.DisplayJAI;
+
+/**
+ * This class can be used to show a RGB image and to sample pixels under an user-drawn line.
+ * -- in other words, the user can draw a line segment over the image and get the line's 
+ * pixels' values. These values can be shown by components in this package.
+ * We assume that the image is a RGB color image, errors will occur with other types.
+ */
+public class LineSampleableDisplay extends DisplayJAI implements MouseListener, MouseMotionListener 
+  {
+  private RenderedImage image; // Local copy of the image.
+  private boolean displayLine; // Should we show the sampling line?
+  private Color[] samples; // Used to get pixels from the image.
+
+  private int x0,y0,x1,y1; // The points that define the sampling line.
+  private int thisX,thisY; // Last mouse cursor position.
+
+  private boolean firstSelected; // True if the first point is already selected.
+  private boolean secondSelected; // True if the second point is already selected.
+
+ /**
+  * The constructor of the class, which will initialize some data structures and call the
+  * constructor of the superclass.
+  */
+  public LineSampleableDisplay(RenderedImage image)
+    {
+    super(image);
+    this.image = image;
+    addMouseListener(this);
+    addMouseMotionListener(this);
+    // Initially we don't have a line.
+    samples = null;
+    firstSelected = false;
+    secondSelected = false;
+    setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+    }
+
+ /**
+  * This method is used to set the start and end points of the sampling line.
+  */
+  public void setLine(int x0,int y0,int x1,int y1)
+    {
+    this.x0 = x0;
+    this.y0 = y0;
+    this.x1 = x1;
+    this.y1 = y1;
+    displayLine = true;
+    samples = calcSamples();
+    repaint();
+    }
+
+ /**
+  * Reset the line so it won't be displayed anymore.
+  */
+  public void unsetLine()
+    {
+    displayLine = false;
+    samples = null;
+    repaint();
+    }
+
+ /**
+  * Paints the component. It will call the paintComponent of the ancestral class and display 
+  * the sampling line as an arrow.
+  */
+  public void paintComponent(Graphics g)
+    {
+    super.paintComponent(g);
+    Graphics2D g2d = (Graphics2D)g;
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    if (displayLine)
+      {
+      g2d.setColor(new Color(255,0,0,150)); // Transparent red. 
+      g2d.setStroke(new BasicStroke(3.0f));
+      g2d.drawLine(x0,y0,x1,y1);
+      // We can do a little cute arrowhead here:
+      double angle = Math.atan2((y1-y0),(x1-x0));
+      int arrow_x0 = (int)(x1+Math.cos(angle-2.618)*25);
+      int arrow_y0 = (int)(y1+Math.sin(angle-2.618)*25);
+      int arrow_x1 = (int)(x1+Math.cos(angle+2.618)*25);
+      int arrow_y1 = (int)(y1+Math.sin(angle+2.618)*25);
+      g2d.drawLine(arrow_x0,arrow_y0,x1,y1);
+      g2d.drawLine(arrow_x1,arrow_y1,x1,y1);
+      }
+    else if (firstSelected)
+      {
+      g2d.setColor(new Color(255,0,0)); // Opaque red. 
+      g2d.setStroke(new BasicStroke(1.0f));
+      g2d.drawLine(x0,y0,thisX,thisY);
+      }
+    }
+
+ /**
+  * This method will be called when the mouse is clicked.
+  */
+  public void mouseClicked(MouseEvent e)
+    {
+    if (!firstSelected) // We want to select the first point.
+      {
+      x0 = e.getX();
+      y0 = e.getY();
+      firstSelected = true;
+      secondSelected = false;
+      repaint();
+      }
+    else if (!secondSelected) // We want to select the second point.
+      {
+      x1 = e.getX();
+      y1 = e.getY();
+      firstSelected = false;
+      secondSelected = true;
+      displayLine = true;
+      // While we're at it, let's get also the samples.
+      samples = calcSamples();
+      repaint();
+      }
+    }  
+
+ /**
+  * This method will be called when the mouse is moved.
+  */
+  public void mouseMoved(MouseEvent e) 
+    {
+    thisX = e.getX();
+    thisY = e.getY();
+    repaint();
+    }
+
+ /**
+  * This method returns the sampled data under the sampling line.
+  * This method should not be called before the line is sampled but we don't enforce it.
+  */
+  public Color[] getSamples()
+    {
+    return samples;
+    }
+
+ /**
+  * This method returns true if the data is ready to be collected.
+  */
+  public boolean dataIsReady()
+    {
+    return secondSelected;
+    }
+
+ /**
+  * This method samples the data and return an array with the pixels' values.
+  */
+  private Color[] calcSamples()
+    {
+    // We cannot estimate precisely how many data points will be needed.
+    // A very safe estimate is three pixels times the length of the line.
+    int len = 3*(int)Math.sqrt((y1-y0)*(y1-y0)+(x1-x0)*(x1-x0));
+    // Get a temporary array for the sampled points.
+    Color[] tempData  = new Color[len];
+    // We need to get the data points on that line. We cannot do that with ROIs,
+    // so let's use the good old Digital Differential Analyzer Algorithm to
+    // sample the pixel on the line between the two collected points.
+    // Reference: http://graphics/csail.mit.edu/classes/6.837/F01/Lecture04
+    int deltaX = x1-x0;
+    int deltaY = y1-y0;
+    int dxAbs = Math.abs(deltaX);
+    int dyAbs = Math.abs(deltaY);
+    int signalX = 0;
+    if (deltaX > 0) signalX = 1; else if (deltaX < 0) signalX = -1;
+    int signalY = 0;
+    if (deltaY > 0) signalY = 1; else if (deltaY < 0) signalY = -1;
+    int x = dyAbs >> 1; // Integer division by 2.
+    int y = dxAbs >> 1;
+    int px = x0;
+    int py = y0;
+    int cont = 0;
+    int[] aPixel = new int[3]; // Warning: we're assuming a RGB color image.
+    // Get the first point.
+    Raster raster = image.getData();
+    raster.getPixel(px,py,aPixel);
+    tempData[cont++] = new Color(aPixel[0],aPixel[1],aPixel[2]);
+    if (dxAbs>=dyAbs) // The line is more horizontal than vertical
+      {
+      for(int i=0;i<dxAbs;i++)
+        {
+        y+=dyAbs;
+        if (y>=dxAbs)
+          {
+          y-=dxAbs;
+          py+=signalY;
+          }
+        px+=signalX;
+        raster.getPixel(px,py,aPixel); // Get the pixel.
+        tempData[cont++] = new Color(aPixel[0],aPixel[1],aPixel[2]);
+        }
+      }
+    else // The line is more vertical than horizontal
+      {
+      for(int i=0;i<dyAbs;i++)
+        {
+        x+=dxAbs;
+        if (x>=dyAbs)
+          {
+          x-=dyAbs;
+          px+=signalX;
+          }
+        py+=signalY;
+        raster.getPixel(px,py,aPixel); // Get the pixel.
+        tempData[cont++] = new Color(aPixel[0],aPixel[1],aPixel[2]);
+        }
+      }
+    // Since the number of collected points is smaller than the number  
+    // of points in the temporary array, we copy it to the smaller one.
+    Color[] data = new Color[cont];
+    data = Arrays.copyOf(tempData,cont);
+    return data;
+    }
+  
+  }

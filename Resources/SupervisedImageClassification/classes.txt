@@ -1,0 +1,8 @@
+# Classes definition for the simple Landsat classification example: 
+# see http://www.lac.inpe.br/JIPCookbook/7020-tutorial-supervisedclassification.jsp
+1 220 220 255 Clouds 
+2 120 120 120 Shadows
+3  80  80 255 Water
+4  80 255  80 Forest
+5 255 255  80 Pasture
+6 255  80  80 Urban

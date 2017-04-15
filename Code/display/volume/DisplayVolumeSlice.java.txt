@@ -1,0 +1,96 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package display.volume;
+
+import java.awt.image.DataBuffer;
+import java.awt.image.renderable.ParameterBlock;
+
+import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.RenderedOp;
+
+import com.sun.media.jai.widget.DisplayJAI;
+
+/**
+ * This class extends DisplayJAI to show slices of a volume image.  
+ */
+public class DisplayVolumeSlice extends DisplayJAI
+  {
+  // A normalized (surrogate) version of the original volume image.
+  private PlanarImage surrogateImage;
+  // The number of slices on this image.
+  private int nSlices;
+  // The band slice presently displayed.
+  private int currentSlice;
+  
+ /**
+  * The constructor for this class, which will get some information about the
+  * image and get its first slice.
+  */
+  public DisplayVolumeSlice(PlanarImage image)
+    {
+    nSlices = image.getSampleModel().getNumBands();
+    currentSlice = 0;
+    // Create a surrogate version of the volume image.
+    ParameterBlock pbMaxMin = new ParameterBlock();
+    pbMaxMin.addSource(image);
+    RenderedOp extrema = JAI.create("extrema", pbMaxMin);
+    // Must get the extrema of all bands !
+    double[] allMins = (double[])extrema.getProperty("minimum");
+    double[] allMaxs = (double[])extrema.getProperty("maximum");
+    double minValue = allMins[0];
+    double maxValue = allMaxs[0];
+    for(int v=1;v<allMins.length;v++)
+      {
+      if (allMins[v] < minValue) minValue = allMins[v];
+      if (allMaxs[v] > maxValue) maxValue = allMaxs[v];
+      }
+    // Rescale the image with the parameters
+    double[] addThis    = new double[1]; addThis[0]    = minValue;
+    double[] multiplyBy = new double[1]; multiplyBy[0] = 255./(maxValue-minValue);
+    // Now we can rescale the pixels' values:
+    ParameterBlock pbSub = new ParameterBlock();
+    pbSub.addSource(image);
+    pbSub.add(addThis);
+    surrogateImage = (PlanarImage)JAI.create("subtractconst",pbSub,null);    
+    ParameterBlock pbMult = new ParameterBlock();
+    pbMult.addSource(surrogateImage);
+    pbMult.add(multiplyBy);
+    surrogateImage = (PlanarImage)JAI.create("multiplyconst",pbMult,null);    
+    // Let's convert the data type for displaying.
+    ParameterBlock pbConvert = new ParameterBlock();
+    pbConvert.addSource(surrogateImage);
+    pbConvert.add(DataBuffer.TYPE_BYTE);
+    surrogateImage = JAI.create("format", pbConvert);
+    // Set the display with the first slice.
+    setSlice(currentSlice);
+    }
+
+ /**
+  * This method sets the display slice.
+  */ 
+  public void setSlice(int slice)
+    {
+    if ((slice >=0) && (slice < nSlices))
+      {
+      currentSlice = slice; 
+      // Extract the one-band slice.
+      PlanarImage newImage = JAI.create("bandselect",surrogateImage,new int[] {currentSlice});
+      set(newImage);
+      }
+    }
+   
+ /**
+  * This method gets the current slice (the one being displayed) index.
+  * @return the current slice.
+  */
+  public int getCurrentSlice()
+    {
+    return currentSlice;
+    }
+  
+  }

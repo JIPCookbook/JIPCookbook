@@ -1,0 +1,36 @@
+package display.annotations;
+
+import java.awt.Color;
+import java.awt.Point;
+
+import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
+/**
+ * This class shows how to display an image with annotations over it. We will open an image and draw
+ * a big red circle over its center.
+ */
+public class DemoDisplayJAIWithAnnotations
+  {
+  public static void main(String[] args)
+    {
+    PlanarImage image = JAI.create("fileload",args[0]);
+    DisplayJAIWithAnnotations display = new DisplayJAIWithAnnotations(image);
+    // Create a circle annotation.
+    Point center = new Point((int)(image.getWidth()/2),(int)(image.getHeight()/2));
+    CircleAnnotation ca = new CircleAnnotation(center,50);
+    ca.setColor(Color.RED);
+    // Add the annotation to the instance of DisplayJAIWithAnnotations.
+    display.addAnnotation(ca);
+    // Create a new Frame and set the DisplayJAIWithAnnotations.
+    JFrame frame = new JFrame();
+    frame.setTitle("Annotations over an image");
+    frame.getContentPane().add(new JScrollPane(display));
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+    frame.setSize(500,200); // Set the frame size so we can scroll over large images. 
+    frame.setVisible(true); 
+    }
+  
+  }

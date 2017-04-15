@@ -1,0 +1,83 @@
+/*
+ * Part of the Java Image Processing Cookbook, please see
+ * http://www.lac.inpe.br/~rafael.santos/JIPCookbook.jsp
+ * for information on usage and distribution.
+ * Rafael Santos (rafael.santos@lac.inpe.br)
+ */
+package display.sampling;
+
+import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
+public class DemoLineSampleableDisplay extends JFrame implements MouseListener
+  {
+  private LineSampleableDisplay lsd; // Instance of LineSampleableDisplay.
+
+ /**
+  * The constructor of the class, which creates the instances of the classes
+  * used for display and sets the graphical user interface.
+  */
+  public DemoLineSampleableDisplay(RenderedImage image)
+    {
+    setTitle("Image Sampling"); // a fancy title for this app
+    // Create the instance of LineSampleableDisplay and register its events.
+    lsd = new LineSampleableDisplay(image);
+    lsd.addMouseListener(this);
+    JScrollPane scDsd = new JScrollPane(lsd);
+    getContentPane().add(scDsd,BorderLayout.CENTER);
+    // Set the closing operation so the application is finished.
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    pack();
+    setVisible(true); // show the frame.
+    }
+  
+ /**
+  * Must implement these methods of the Mouselistener interface.
+  */
+  public void mouseDragged(MouseEvent e) { }
+  public void mouseExited(MouseEvent e) { }
+  public void mouseEntered(MouseEvent e) { }
+  public void mousePressed(MouseEvent e) { }
+  public void mouseReleased(MouseEvent e) { }
+
+
+ /**
+  * This method will be executed when the mouse is clicked over the DEM image.
+  * If the DEM samples are already collected, it will get the samples so the
+  * instance of DisplayDEMProfile can display them.
+  * @param e the mouse event
+  */
+  public void mouseClicked(MouseEvent e) 
+    {
+    if (lsd.dataIsReady())
+      {
+      // Not really elegant -- closing this window will close the whole application.
+      JFrame otherFrame = new JFrame("RGB Plot");
+      DisplayRGBLinesComponent dColors = new DisplayRGBLinesComponent(700,500);
+      dColors.setColors(lsd.getSamples());
+      otherFrame.getContentPane().add(dColors);
+      otherFrame.pack();
+      otherFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      otherFrame.setVisible(true);
+      }
+    }
+ 
+ /**
+  * The application entry point.
+  * @param args the command line arguments (image file name).
+  */
+  public static void main(String[] args) throws IOException
+    {
+    RenderedImage image = ImageIO.read(new File(args[0]));
+    new DemoLineSampleableDisplay(image);
+    }
+
+  }

@@ -1,0 +1,29 @@
+# Samples for the classes for the simple Landsat classification example: 
+# see http://www.lac.inpe.br/JIPCookbook/7020-tutorial-supervisedclassification.jsp
+# Samples for Clouds (class #1)
+1 305 51 2 2
+1 306 62 6 8
+1 519 448 7 6
+1 620 3 7
+# Samples for Shadows (class #2)
+2 287 68 7 15
+2 600 467 6 11
+# Samples for Water (class #3)
+3 323 556 22 9
+3 600 41 50 11
+3 743 375 24 6
+# Samples for Forest (class #4)
+4 246 83 14 35
+4 622 227 11 51
+4 731 293 38 15
+4 694 558 36 33
+# Samples for Pasture (class #5)
+5 622 329 8 21
+5 306 171 10 11
+5 293 230 6 6
+5 174 579 8 15
+# Samples for Urban (class #6)
+6 129 331 5 4
+6 133 391 11 7
+6 173 373 7 7
+6 196 408 6 6
